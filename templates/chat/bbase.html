@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>{% block title %}chat test{% endblock %}</title>
+    <!-- <meta http-equiv="refresh" content="2">  -->
+    <link rel="stylesheet" href="/media/style.css" type="text/css" media="screen"
+      charset="utf-8" />
+
+    <style type="text/css">
+        * {
+            font-size: 0.95em;
+        }
+
+        #menu a {
+            text-decoration: none;
+            background: #eee;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-right: 2px solid #fff;
+            padding-right: 3px;
+            padding-left: 3px;
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        a:hover {
+            background: #eeebeb;
+            border-top: 1px solid #aaa;
+            border-bottom: 1px solid #aaa;
+            color: #555;
+        }
+
+        #container { margin: auto; width: 800px; border: 0px solid; }
+        p { font-size: 1.1em; }
+        h3 { margin-right: 30px; display: inline; }
+
+#chatbox {  
+    color: #555;
+    text-align:left;  
+    margin:0 auto;  
+    margin-bottom:25px;  
+    padding:10px;  
+    background:#fff;  
+    height:270px;  
+    border:1px solid #ACD8F0;  
+    overflow:auto; }  
+    
+    </style>
+
+{% block header %}{% endblock %}
+</head>
+
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>
+

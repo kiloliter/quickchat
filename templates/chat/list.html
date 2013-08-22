@@ -1,0 +1,116 @@
+{% extends "bbase.html" %}
+
+{% block header %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+// jQuery Document
+
+$(document).ready(function(){
+	//If user submits the form
+	$("#submitmsg").click(function(){	
+		var clientmsg = $("#usermsg").val();
+		$.post("sendline", {text: clientmsg});
+		$("#usermsg").attr("value", "");
+		loadLog();
+		return false;
+	});
+var timestamp = null;
+
+function comet() {
+	$.ajax({
+		type : 'Get',
+		url  : 'commandStream?timestamp=' + timestamp,
+		async : true,
+		cache : false,
+		
+		success : function(data) {
+					var oldscrollHeight = $("#chatbox").attr("scrollHeight") - 20;
+					if(data == "1"){
+						loadLog();
+						var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20;
+						if(newscrollHeight > oldscrollHeight){
+							$("#chatbox").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
+						}			
+					}
+//					var json = eval('(' + data + ')');
+//					timestamp  = json['timestamp'];
+					setTimeout(comet, 1000);
+		},
+		error : function(XMLHttpRequest, textstatus, error) { 
+					alert(error);
+					setTimeout(comet, 15000);
+		}		
+	});
+}
+
+	//Load the chat log
+	function loadLog(){		
+		var oldscrollHeight = $("#chatbox").attr("scrollHeight") - 20;
+		$.ajax({
+			url: "getnext",
+			cache: false,
+			success: function(html){		
+				$("#chatbox").html(html); //Insert chat log into the #chatbox div				
+				var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20;
+				if(newscrollHeight > oldscrollHeight){
+					$("#chatbox").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
+				}				
+	  		},
+		});
+	}
+	comet();
+loadLog();
+});
+
+
+jQuery(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+
+
+	</script>
+{% endblock %}
+
+{% block content %}
+<div id="chatbox"></div>
+	<form name="message" action="">
+            {% csrf_token %}
+		<input name="usermsg" type="text" id="usermsg" size="64" maxlength=256 AUTOCOMPLETE="off" />
+		<input name="submitmsg" type="submit"  id="submitmsg" value="send" />
+	</form>
+{% endblock %}

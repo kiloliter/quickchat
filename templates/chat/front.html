@@ -1,0 +1,11 @@
+{% extends "bbase.html" %}
+
+{% block content %}
+<p>This is a simple chat application that allows two people to privately send messages. There is no signup required.</p>
+<p>Enter the name of the room that you wish to create. You will be redirected to the room. Then just send the URL to the person you want to chat with. After both of you leave, the room will close.</p>
+<form action="./createRoom" method="post">{% csrf_token %}
+<p>room name:</p>
+<p><input name="roomName" type="text" size="40" maxlength=128 /></p>
+<input type="submit" value="create room" />
+</form>
+{% endblock %}
